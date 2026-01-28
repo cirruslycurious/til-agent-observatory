@@ -56,15 +56,22 @@ The Manager doesn't micromanage - it sets goals and evaluates outcomes. The Work
 
 ### 2. Triple-Scoring System with Bias Correction
 
-Instead of trusting a single LLM's judgment, we use **three independent assessors**:
+Instead of trusting a single LLM's judgment, we use **three independent assessors** with intentionally varied configurations to create score variance:
 
-| Assessor | Model | Role | Transform |
-|----------|-------|------|-----------|
-| Manager Self-Score | GPT-5.2 / Claude Sonnet 4.5 | Strategic judgment | Round up to nearest 0.5 |
-| Nova Primary | Amazon Nova | Technical rigor | Round up to nearest 0.05 |
-| Nova Secondary | Amazon Nova | Audience appeal | +0.25 flat boost |
+| Assessor | Model | Persona | Temperature | Transform |
+|----------|-------|---------|-------------|-----------|
+| Manager Self-Score | GPT-5.2 or Claude Sonnet 4.5 (opposite of Worker) | Generic evaluator | 0.4 | Round up to nearest 0.5 |
+| Nova Primary | Amazon Nova Pro | Program committee member | 0.4 | Round up to nearest 0.05 |
+| Nova Secondary | Amazon Nova Pro | Engaged conference attendee | 0.5 | +0.25 flat boost |
 
-**Why transforms?** Nova models exhibited a 7.83 clustering bias. The differential transforms break this pattern while preserving relative rankings.
+**Three levers for variance:**
+1. **Different prompts** — Each assessor uses a distinct evaluation lens (rigor vs. audience appeal vs. strategic fit)
+2. **Different temperatures** — 0.4/0.4/0.5 varies the response distributions
+3. **Score transforms** — Differential rounding spreads the score distribution
+
+**Why variance matters:** Early runs showed scores clustering tightly around 7.8-7.9. With an acceptance threshold of 7.901 (one standard deviation above the mean, chosen to ensure some rejections and drive iteration behavior), differences like 7.82 vs 7.85 felt like noise. The three levers spread the distribution so meaningful quality differences become visible.
+
+**Cross-vendor evaluation:** The Manager always uses the opposite LLM vendor from the Worker who generated the abstract. If Worker is Anthropic, Manager evaluates with OpenAI (and vice versa).
 
 ### 3. Action Point Budget System
 
