@@ -4,6 +4,8 @@
 
 > **What makes AI agents succeed or fail?** TIL answers this by orchestrating multiple AI agents to generate conference abstracts while capturing every decision, tool call, and behavioral pattern. The abstracts are the *vehicle*; the observatory is the *purpose*.
 
+![TIL Observatory Homepage](docs/assets/homepage-hero.png)
+
 ---
 
 ## Why This Project Exists
@@ -106,6 +108,8 @@ Every agent decision is captured as a structured event:
 
 This enables **post-hoc analysis** of agent behavior patterns without instrumenting the agents themselves.
 
+![Event Log showing tool calls](docs/assets/event-log-tool-calls.png)
+
 ### 5. Dashboard V2: Research-Grade Analytics
 
 A complete rewrite achieving **10x performance improvement** (320ms vs 3.2s):
@@ -114,6 +118,10 @@ A complete rewrite achieving **10x performance improvement** (320ms vs 3.2s):
 - **Parallel GSI queries**: Fetch `completed` + `failed` jobs simultaneously
 - **5-minute caching**: Instant repeat queries for interactive exploration
 - **7 specialized dashboards**: Executive, Vendors (2), Context, Evaluator, Tools, Speed
+
+![Dashboard Executive View](docs/assets/dashboard-executive.png)
+
+![Dashboard Top Abstracts](docs/assets/dashboard-top-abstracts.png)
 
 ---
 
@@ -285,6 +293,8 @@ cp packages/frontend/.env.example packages/frontend/.env.local
 # Start frontend development server
 cd packages/frontend && npm run dev
 ```
+
+![Workflow Launcher](docs/assets/workflow-launcher.png)
 
 > **Note:** The frontend requires a deployed AWS backend. See [Deployment Guide](docs/guides/DEPLOYMENT.md) to set up the API before running locally.
 
