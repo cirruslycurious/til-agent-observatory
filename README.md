@@ -1,6 +1,6 @@
 # TIL - Agent Workflow Observatory
 
-**A production-grade platform for studying multi-agent AI behavior through real-world task execution.**
+**A research platform for studying how AI agents make decisions under constraints.**
 
 > **What makes AI agents succeed or fail?** TIL answers this by orchestrating multiple AI agents to generate conference abstracts while capturing every decision, tool call, and behavioral pattern. The abstracts are the *vehicle*; the observatory is the *purpose*.
 
