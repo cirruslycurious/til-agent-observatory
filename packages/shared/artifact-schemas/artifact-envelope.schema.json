@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Artifact Envelope",
+  "description": "Standard artifact envelope structure for scratch_artifacts table",
+  "type": "object",
+  "required": ["meta", "data", "quality_signals", "provenance", "execution"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "job_id",
+        "iteration",
+        "parent_task_id",
+        "task_id",
+        "worker_id",
+        "worker_vendor",
+        "worker_model",
+        "artifact_type",
+        "artifact_version",
+        "content_hash",
+        "schema_version",
+        "spawned_at",
+        "completed_at",
+        "status"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "description": "Unique artifact identifier: {job_id}#{task_id}#{artifact_version}"
+        },
+        "job_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Job identifier (UUID)"
+        },
+        "iteration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4,
+          "description": "Iteration number (0-4)"
+        },
+        "parent_task_id": {
+          "type": "string",
+          "description": "Parent task identifier (if spawned from another task)"
+        },
+        "task_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,64}$",
+          "description": "Task identifier (e.g., 'cfp_extract', 'evidence_research') - no '#' character, no 'latest_' or 'meta_' prefix"
+        },
+        "worker_id": {
+          "type": "string",
+          "description": "Worker identifier (e.g., 'manager', 'worker', 'cfp-extractor')"
+        },
+        "worker_vendor": {
+          "type": "string",
+          "enum": ["openai", "anthropic"],
+          "description": "LLM vendor"
+        },
+        "worker_model": {
+          "type": "string",
+          "description": "LLM model identifier (e.g., 'gpt-4', 'claude-3-opus')"
+        },
+        "artifact_type": {
+          "type": "string",
+          "enum": ["style_profile", "evidence_bundle", "draft_candidates", "review_feedback", "final"],
+          "description": "Artifact type"
+        },
+        "artifact_version": {
+          "type": "string",
+          "pattern": "^v\\d{4}$",
+          "description": "Artifact version (zero-padded to 4 digits, e.g., 'v0001', 'v0002')"
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of artifact data (for content-aware idempotency)"
+        },
+        "schema_version": {
+          "type": "string",
+          "description": "Schema version (e.g., '1.0')"
+        },
+        "spawned_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp when artifact creation started"
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp when artifact creation completed"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["completed", "failed", "timeout"],
+          "description": "Artifact status"
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "description": "Artifact-specific data (summary if >=350KB, full payload in S3)"
+    },
+    "quality_signals": {
+      "type": "object",
+      "required": ["confidence", "coverage"],
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence score (0-1)"
+        },
+        "coverage": {
+          "type": "string",
+          "enum": ["comprehensive", "moderate", "limited"],
+          "description": "Coverage level"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["sources", "tool_calls"],
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "uri", "snippet", "captured_at"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique source identifier"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["artifact", "web", "conf"],
+                "description": "Source type"
+              },
+              "uri": {
+                "type": "string",
+                "description": "Source URI or reference"
+              },
+              "snippet": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "Source snippet (max 200 chars)"
+              },
+              "captured_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "ISO timestamp when source was captured"
+              }
+            }
+          },
+          "minItems": 1,
+          "description": "Array of source references (required, non-empty)"
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Claim object (required for evidence_bundle, optional for others)"
+          },
+          "description": "Array of claim objects"
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tool_name", "tool_invocation_id", "success_status", "results_summary"],
+            "properties": {
+              "tool_name": {
+                "type": "string",
+                "enum": ["dynamodb_lookup", "web_search"],
+                "description": "Tool name"
+              },
+              "tool_invocation_id": {
+                "type": "string",
+                "description": "Unique tool invocation identifier"
+              },
+              "success_status": {
+                "type": "string",
+                "enum": ["success", "failure", "skipped"],
+                "description": "Tool execution status"
+              },
+              "results_summary": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "Tool results summary (50-200 chars)"
+              },
+              "s3_tool_results_ref": {
+                "type": "string",
+                "description": "S3 key for full tool results (if >50KB)"
+              }
+            }
+          },
+          "description": "Array of tool call objects (required)"
+        },
+        "inputs": {
+          "type": "object",
+          "description": "Input data (required)"
+        }
+      }
+    },
+    "overflow": {
+      "type": "object",
+      "properties": {
+        "s3_payload_ref": {
+          "type": "string",
+          "description": "S3 key for full artifact payload (if >=350KB)"
+        },
+        "s3_tool_results_ref": {
+          "type": "string",
+          "description": "S3 key for tool results (per-tool in provenance.tool_calls[])"
+        },
+        "payload_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of full artifact payload"
+        },
+        "payload_size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Actual size of full artifact before compression/overflow"
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "tokens_used": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tokens used for artifact generation"
+        },
+        "execution_time_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Execution time in milliseconds"
+        },
+        "error": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Error message (if status = failed)"
+        }
+      }
+    },
+    "expires_at": {
+      "type": "integer",
+      "description": "Unix timestamp for TTL (14 days from creation)"
+    }
+  }
+}

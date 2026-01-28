@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Style Profile Artifact Schema v1",
+  "description": "Schema for CFP/Style Extractor output artifacts",
+  "type": "object",
+  "required": ["meta", "data", "quality_signals", "provenance"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "job_id",
+        "iteration",
+        "parent_task_id",
+        "task_id",
+        "worker_id",
+        "worker_vendor",
+        "worker_model",
+        "artifact_type",
+        "artifact_version",
+        "content_hash",
+        "schema_version",
+        "spawned_at",
+        "completed_at",
+        "status"
+      ],
+      "properties": {
+        "artifact_id": {"type": "string"},
+        "job_id": {"type": "string", "format": "uuid"},
+        "iteration": {"type": "integer", "minimum": 0, "maximum": 4},
+        "parent_task_id": {"type": ["string", "null"]},
+        "task_id": {"type": "string", "pattern": "^[a-z0-9_]{1,64}$"},
+        "worker_id": {"type": "string"},
+        "worker_vendor": {"type": "string", "enum": ["openai", "anthropic"]},
+        "worker_model": {"type": "string"},
+        "artifact_type": {"type": "string", "enum": ["style_profile", "evidence_bundle", "draft_candidates", "review_feedback", "final"]},
+        "artifact_version": {"type": "string", "pattern": "^v\\d{4}$"},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "schema_version": {"type": "string", "pattern": "^v\\d+$"},
+        "spawned_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"type": "string", "format": "date-time"},
+        "status": {"type": "string", "enum": ["completed", "failed", "timeout"]}
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["tone", "length_preference", "key_phrases"],
+      "properties": {
+        "tone": {"type": "string", "description": "Writing tone (e.g., 'formal', 'technical', 'accessible')"},
+        "length_preference": {"type": "string", "description": "Preferred length (e.g., 'concise', 'detailed', 'comprehensive')"},
+        "key_phrases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string"},
+          "description": "Key phrases extracted from CFP"
+        }
+      }
+    },
+    "quality_signals": {
+      "type": "object",
+      "required": ["confidence", "coverage"],
+      "properties": {
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "coverage": {"type": "string", "enum": ["comprehensive", "moderate", "limited"]}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["sources"],
+      "properties": {
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "uri", "snippet", "captured_at"],
+            "properties": {
+              "id": {"type": "string"},
+              "type": {"type": "string", "enum": ["artifact", "web", "conf"]},
+              "uri": {"type": "string"},
+              "snippet": {"type": "string", "maxLength": 200},
+              "captured_at": {"type": "string", "format": "date-time"}
+            }
+          }
+        },
+        "claims": {
+          "type": "array",
+          "minItems": 0,
+          "items": {"type": "object"},
+          "description": "Optional claims (may be empty if derived from CFP text only)"
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tool_name", "tool_invocation_id", "success_status", "results_summary"],
+            "properties": {
+              "tool_name": {"type": "string", "enum": ["dynamodb_lookup", "web_search"]},
+              "tool_invocation_id": {"type": "string"},
+              "success_status": {"type": "string", "enum": ["success", "failure", "skipped"]},
+              "results_summary": {"type": "string", "maxLength": 200},
+              "s3_tool_results_ref": {"type": "string"}
+            }
+          }
+        },
+        "inputs": {"type": "object"}
+      }
+    },
+    "overflow": {
+      "type": "object",
+      "properties": {
+        "s3_payload_ref": {"type": "string"},
+        "payload_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "payload_size_bytes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "tokens_used": {"type": "integer", "minimum": 0},
+        "execution_time_ms": {"type": "integer", "minimum": 0},
+        "error": {"type": "string", "maxLength": 500}
+      }
+    },
+    "expires_at": {"type": "integer"}
+  }
+}

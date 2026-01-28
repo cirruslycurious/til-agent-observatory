@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+.aws-sam/
+cdk.out/
+coverage/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AWS
+.aws-sam/
+samconfig.toml
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Lambda build artifacts
+packages/agents/*-bundled/
+packages/agents/layers/python-dependencies/python/
+
+# TypeScript compiled output (keep .ts source files)
+packages/shared/**/*.js
+packages/shared/**/*.d.ts
+packages/shared/**/*.js.map
+packages/shared/**/*.d.ts.map
+
+# Cursor
+.cursor/
+.mcp.json

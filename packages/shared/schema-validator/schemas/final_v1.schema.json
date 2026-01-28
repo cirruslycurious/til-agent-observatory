@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Final Abstract Artifact Schema v1",
+  "description": "Schema for Worker Agent final abstract submissions",
+  "type": "object",
+  "required": ["meta", "data", "quality_signals", "provenance"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "job_id",
+        "iteration",
+        "parent_task_id",
+        "task_id",
+        "worker_id",
+        "worker_vendor",
+        "worker_model",
+        "artifact_type",
+        "artifact_version",
+        "content_hash",
+        "schema_version",
+        "spawned_at",
+        "completed_at",
+        "status"
+      ],
+      "properties": {
+        "artifact_id": {"type": "string"},
+        "job_id": {"type": "string", "format": "uuid"},
+        "iteration": {"type": "integer", "minimum": 0, "maximum": 4},
+        "parent_task_id": {"type": ["string", "null"]},
+        "task_id": {"type": "string", "pattern": "^[a-z0-9_]{1,64}$"},
+        "worker_id": {"type": "string"},
+        "worker_vendor": {"type": "string", "enum": ["openai", "anthropic"]},
+        "worker_model": {"type": "string"},
+        "artifact_type": {"type": "string", "const": "final"},
+        "artifact_version": {"type": "string", "pattern": "^v\\d{4}$"},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "schema_version": {"type": "string", "pattern": "^v\\d+$"},
+        "spawned_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"type": "string", "format": "date-time"},
+        "status": {"type": "string", "enum": ["completed", "failed", "timeout"]}
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["title", "abstract"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "abstract": {"type": "string", "minLength": 1, "maxLength": 10000},
+        "evidence_pointers": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "quality_signals": {
+      "type": "object",
+      "required": ["confidence", "coverage"],
+      "properties": {
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "coverage": {"type": "string", "enum": ["comprehensive", "moderate", "limited"]}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["tool_calls", "inputs"],
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "uri", "snippet", "captured_at"],
+            "properties": {
+              "id": {"type": "string"},
+              "type": {"type": "string", "enum": ["artifact", "web", "conf"]},
+              "uri": {"type": "string"},
+              "snippet": {"type": "string", "maxLength": 200},
+              "captured_at": {"type": "string", "format": "date-time"}
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tool_name", "tool_invocation_id", "success_status", "results_summary"],
+            "properties": {
+              "tool_name": {"type": "string"},
+              "tool_invocation_id": {"type": "string"},
+              "success_status": {"type": "string", "enum": ["success", "failure", "skipped"]},
+              "results_summary": {"type": "string", "maxLength": 500},
+              "s3_tool_results_ref": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "conference": {"type": "string"},
+            "topic": {"type": "string"},
+            "manager_feedback": {"type": ["string", "null"]}
+          }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "tokens_used": {"type": ["integer", "null"], "minimum": 0},
+        "execution_time_ms": {"type": ["integer", "null"], "minimum": 0},
+        "error": {"type": "string", "maxLength": 500}
+      }
+    },
+    "overflow": {
+      "type": "object",
+      "properties": {
+        "s3_payload_ref": {"type": "string"},
+        "payload_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "payload_size_bytes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "expires_at": {"type": "integer"}
+  }
+}

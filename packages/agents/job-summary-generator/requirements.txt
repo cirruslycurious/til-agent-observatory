@@ -1,0 +1,5 @@
+# Job Summary Generator Lambda Requirements
+# Minimal dependencies - uses boto3 from Lambda runtime
+
+# No additional packages needed
+# boto3 is provided by AWS Lambda runtime

@@ -1,0 +1,46 @@
+{
+  "name": "til-agent-workflow-observatory",
+  "version": "1.0.0",
+  "description": "Agent Workflow Observatory - Observability platform for multi-agent AI workflows",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "dev:api": "npm run dev --workspace=packages/api",
+    "cdk:synth": "cd infrastructure/cdk && cdk synth",
+    "cdk:deploy": "cd infrastructure/cdk && cdk deploy",
+    "cdk:diff": "cd infrastructure/cdk && cdk diff",
+    "backfill-summaries": "ts-node scripts/backfill-job-summaries.ts"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.968.0",
+    "@aws-sdk/client-lambda": "^3.971.0",
+    "@aws-sdk/credential-providers": "^3.971.0",
+    "@types/node": "^20.19.30",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "npm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/til-agent-observatory.git"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "observability",
+    "aws",
+    "serverless"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@til/shared-auth",
+  "version": "1.0.0",
+  "description": "Shared authentication utilities",
+  "private": true,
+  "main": "token-verifier.ts",
+  "types": "token-verifier.ts"
+}

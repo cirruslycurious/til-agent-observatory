@@ -1,0 +1,353 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Inter Tight", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* HSL tokens - Tactical Dark Theme (matching reference) */
+  --background: 220 20% 6%;
+  --background-elevated: 220 18% 8%;
+  --background-card: 220 16% 10%;
+  --foreground: 210 20% 92%;
+  --card: 220 16% 10%;
+  --card-foreground: 210 20% 92%;
+  --panel: 220 18% 7%;
+  --border: 200 15% 18%;
+  --muted: 220 15% 14%;
+  --muted-foreground: 210 12% 50%;
+  
+  /* Tactical Cyan - Primary */
+  --primary: 185 80% 50%;
+  --primary-glow: 185 80% 60%;
+  --primary-foreground: 220 20% 6%;
+  
+  /* Amber/Gold - Accent/Warning */
+  --accent: 38 92% 55%;
+  --accent-glow: 38 92% 65%;
+  --accent-foreground: 220 20% 6%;
+  
+  /* Success Green */
+  --success: 152 70% 45%;
+  --success-glow: 152 70% 55%;
+
+  /* Role Colors */
+  --role-worker: 152 70% 45%;
+  --role-manager: 38 92% 55%;
+  --role-system: 185 80% 50%;
+  --role-evaluator: 280 65% 55%;
+
+  /* Legacy agent colors (for compatibility) */
+  --agent-manager: 38 92% 55%;
+  --agent-worker: 152 70% 45%;
+  --agent-evaluator: 280 65% 55%;
+  --agent-system: 185 80% 50%;
+
+  /* Status */
+  --warning: 38 92% 55%;
+  --info: 185 80% 50%;
+  
+  /* Grid/Technical Overlay */
+  --grid-color: 185 40% 20%;
+  --scanline-color: 185 50% 15%;
+}
+
+* {
+  box-sizing: border-box;
+  border-color: hsl(var(--border));
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0.01em;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Inter Tight", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  letter-spacing: 0.02em;
+}
+
+code,
+.mono {
+  font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+::selection {
+  background: rgba(93, 214, 255, 0.25);
+  color: hsl(var(--foreground));
+}
+
+/* Tactical primitives */
+.tactical-panel {
+  background: color-mix(in srgb, hsl(var(--card)) 95%, black);
+  border: 1px solid hsl(var(--border));
+}
+
+.tactical-card {
+  background: hsl(var(--panel));
+  border: 1px solid hsl(var(--border));
+}
+
+.agent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid hsl(var(--border));
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+.agent-badge-manager {
+  background: hsl(var(--agent-manager) / 0.1);
+  color: hsl(var(--agent-manager));
+  border-color: hsl(var(--agent-manager) / 0.4);
+}
+
+.agent-badge-worker {
+  background: hsl(var(--agent-worker) / 0.1);
+  color: hsl(var(--agent-worker));
+  border-color: hsl(var(--agent-worker) / 0.4);
+}
+
+.agent-badge-evaluator {
+  background: hsl(var(--agent-evaluator) / 0.1);
+  color: hsl(var(--agent-evaluator));
+  border-color: hsl(var(--agent-evaluator) / 0.4);
+}
+
+.agent-badge-system {
+  background: hsl(var(--agent-system) / 0.1);
+  color: hsl(var(--agent-system));
+  border-color: hsl(var(--agent-system) / 0.4);
+}
+
+.tool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.5);
+  font-size: 12px;
+  font-family: "JetBrains Mono", monospace;
+  text-transform: uppercase;
+}
+
+.status-success {
+  color: hsl(var(--success));
+}
+.status-pending {
+  color: hsl(var(--warning));
+}
+.status-error {
+  color: #ef4444;
+}
+
+.metric-box {
+  background: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border));
+  padding: 0.9rem 1rem;
+  min-width: 140px;
+}
+
+.iteration-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border: 2px solid hsl(var(--border));
+  background: hsl(var(--panel));
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+}
+
+/* Dashboard background */
+.dashboard-bg {
+  background-color: hsl(var(--background));
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+    radial-gradient(circle at 20% 20%, rgba(93, 214, 255, 0.06), transparent 20%),
+    radial-gradient(circle at 80% 10%, rgba(179, 148, 255, 0.05), transparent 25%);
+  background-size: 40px 40px, 40px 40px, auto, auto;
+}
+
+.panel {
+  @apply tactical-panel;
+}
+
+.panel-border {
+  border: 1px solid hsl(var(--border));
+}
+
+/* Scanline effect */
+.scanline::after {
+  content: '';
+  @apply absolute inset-0 pointer-events-none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    hsl(var(--scanline-color) / 0.03) 2px,
+    hsl(var(--scanline-color) / 0.03) 4px
+  );
+}
+
+/* Header styling */
+.tactical-header {
+  @apply text-xs font-mono uppercase tracking-widest text-muted-foreground;
+}
+
+/* Landing page grid - matching reference */
+.tactical-grid {
+  background-image: 
+    linear-gradient(hsl(var(--grid-color) / 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--grid-color) / 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.text-glow-primary {
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+}
+
+.text-glow-accent {
+  text-shadow: 0 0 20px hsl(var(--accent) / 0.5);
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.2),
+              0 0 40px hsl(var(--primary) / 0.1),
+              inset 0 1px 0 hsl(var(--primary) / 0.1);
+}
+
+.glow-accent {
+  box-shadow: 0 0 20px hsl(var(--accent) / 0.2),
+              0 0 40px hsl(var(--accent) / 0.1);
+}
+
+.glow-success {
+  box-shadow: 0 0 20px hsl(var(--success) / 0.2),
+              0 0 40px hsl(var(--success) / 0.1);
+}
+
+.glow-tag {
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.2);
+}
+
+.animated-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(93, 214, 255, 0.15);
+  pointer-events: none;
+}
+
+.tactical-card {
+  @apply relative bg-card border border-border rounded-sm overflow-hidden;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background-card)) 0%,
+    hsl(220 18% 9%) 100%
+  );
+}
+
+.tactical-card::before {
+  content: '';
+  @apply absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-primary/50;
+}
+
+.tactical-card::after {
+  content: '';
+  @apply absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-primary/50;
+}
+
+.corner-accent::before,
+.corner-accent::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  --corner-color: hsl(var(--accent));
+}
+
+/* Top-left corner only */
+.corner-accent::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid var(--corner-color);
+  border-left: 1px solid var(--corner-color);
+  border-right: none;
+  border-bottom: none;
+}
+
+/* Bottom-right corner only */
+.corner-accent::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid var(--corner-color);
+  border-right: 1px solid var(--corner-color);
+  border-left: none;
+  border-top: none;
+}
+
+/* Role-specific corner colors */
+.corner-amber::before,
+.corner-amber::after {
+  --corner-color: rgb(251, 191, 36);
+}
+
+.corner-success::before,
+.corner-success::after {
+  --corner-color: rgb(52, 211, 153);
+}
+
+.corner-purple::before,
+.corner-purple::after {
+  --corner-color: rgb(168, 85, 247);
+}
+
+.corner-cyan::before,
+.corner-cyan::after {
+  --corner-color: rgb(34, 211, 238);
+}
+
+.corner-yellow::before,
+.corner-yellow::after {
+  --corner-color: rgb(250, 204, 21);
+}
+
+.corner-green::before,
+.corner-green::after {
+  --corner-color: rgb(74, 222, 128);
+}
